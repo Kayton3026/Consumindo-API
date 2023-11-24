@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumindo API</title>
+</head>
+<style>
+    * {
+        margin: 0%;
+        padding: 0%;
+        background: bisque;
+    }
+    h1 {
+        text-align: center;
+        color: rgb(0, 0, 0);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .form-group {
+        padding: 10px;
+        height: 50px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+    input{
+        height: 30px;
+        border-radius: 100px;
+        font-size:medium;
+        text-align: center;
+    }
+    img{
+        width: 50px;
+    }
+</style>
+<body>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" alt="Icone Casinha">
+    
+    <h1>
+        Consultando seu CEP
+    </h1>
+    <div class="container">
+        <form action="">
+            <div class="form-group">
+                <label for="cep">CEP</label><br>
+                <input type="text" class="form-control" id="cep" onblur="pesquisarCEP()">
+            </div>
+            <div class="form-group">
+                <label for="logradouro">Logradouro</label><br>
+                <input type="text" class="form-control" id="logradouro">
+            </div>
+            <div class="form-group">
+                <label for="bairro">Bairro</label><br>
+                <input type="text" class="form-control" id="bairro">
+            </div>
+            <div class="form-group">
+                <label for="localidade">Localidade</label><br>
+                <input type="text" class="form-control" id="cidade">
+            </div>
+            <div class="form-group">
+                <label for="uf">UF</label><br>
+                <input type="text" class="form-control" id="uf">
+            </div>
+        </form>
+    </div>
+    <script>
+        function preencherCampos(dados) {
+            document.getElementById('logradouro').value = dados.logradouro || "";
+            document.getElementById('bairro').value = dados.bairro || "";
+            document.getElementById('cidade').value = dados.localidade || "";
+            document.getElementById('uf').value = dados.uf || "";
+        }
+        function pesquisarCEP() {
+            var cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep.length !== 8) {
+                alert("Formato de CEP inválido.");
+                return;
+            }
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert("CEP não encontrado.");
+                    } else {
+                        preencherCampos(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                    alert("Erro na consulta. Tente novamente.");
+                });
+        }
+    </script>
+</body>
+</html>
